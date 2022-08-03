@@ -1,34 +1,34 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import Container from 'react-bootstrap/Container'
 import Table from 'react-bootstrap/Table'
 import LogItem from './LogItem'
 import AddLogItem from './AddLogItem'
 import Alert from 'react-bootstrap/Alert'
+import {ipcRenderer} from 'electron'
 
 const App = () => {
-	const [logs, setLogs ] = useState([
-		{
-			_id: 1,
-			title: 'Bug 1',
-			priority: 'low',
-			user: 'Brad',
-			created: new Date().toString()
-		},
-		{
-			_id: 2,
-			title: 'Bug 2',
-			priority: 'moderate',
-			user: 'Filip',
-			created: new Date().toString()
-		},{
-			_id: 3,
-			title: 'Bug 2',
-			priority: 'high',
-			user: 'Szymon',
-			created: new Date().toString()
-		},
-		
-	])
+	const [logs, setLogs ] = useState([])
+
+	const [alert, setAlert] = useState({
+		show: false,
+		message: '',
+		variant: 'success'
+	})
+
+
+	useEffect(() => {
+		ipcRenderer.send('logs:load')
+
+		ipcRenderer.on('logs:get', (event, logs) => {
+			setLogs(JSON.parse(logs))
+		})
+
+		ipcRenderer.on('logs:clear', () => {
+			setLogs([])
+			showAlert('Logs cleared')
+		})
+
+	},[])
 
 	function addItem(item) {
 		if(item.text === '' || item.user === '' || item.priority === '') {
@@ -36,18 +36,18 @@ const App = () => {
 			return false
 		}
 
-		item._id = Math.floor(Math.random() * 90000) + 10000
-		item.created = new Date().toString()
-		setLogs([...logs, item])
+		// item._id = Math.floor(Math.random() * 90000) + 10000
+		// item.created = new Date().toString()
+		// setLogs([...logs, item])
+
+		ipcRenderer.send('logs:add', item)
 		showAlert('Log Added')
 
 	}
 
-	const [alert, setAlert] = useState({
-		show: false,
-		message: '',
-		variant: 'success'
-	})
+	
+
+
 
 	function showAlert(message, variant='success', seconds = 3000) {
 		setAlert({
@@ -66,7 +66,9 @@ const App = () => {
 	}
 
 	function deleteItem(_id) {
-		setLogs(logs.filter(log => log._id !== _id))
+		// setLogs(logs.filter(log => log._id !== _id))
+
+		ipcRenderer.send('logs:delete', _id)
 		showAlert('Log Deleted', 'danger')
 	}
 

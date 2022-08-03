@@ -37,8 +37,8 @@ const AddLogItem = ({addItem}) => {
                         <Form.Control as='select' value={priority} onChange={(e) => setPriority(e.target.value)}>
                             <option value="0">Select Priority</option>
                             <option value="low">Low</option>
-                            <option value="Moderate">Moderate</option>
-                            <option value="High">High</option>
+                            <option value="moderate">Moderate</option>
+                            <option value="high">High</option>
                         </Form.Control>
                     </Col>
                 </Row>

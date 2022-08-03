@@ -18,11 +18,13 @@
     "dev": "cross-env NODE_ENV=development webpack-dev-server --hot --host 0.0.0.0 --config=./webpack.dev.config.js --mode development",
     "build": "cross-env NODE_ENV=production webpack --config webpack.build.config.js --mode production",
     "package": "npm run build",
-    "postpackage": "electron-packager ./ --out=./release-builds"
+    "postpackage": "electron-packager ./ --out=./release-builds --overwrite --platform=win32 --arch=ia32 --icon=assets/icons.ico"
   },
   "dependencies": {
     "bootstrap": "^5.1.0",
+    "dotenv": "^16.0.1",
     "moment": "^2.29.4",
+    "mongoose": "^6.5.0",
     "react": "^16.13.1",
     "react-bootstrap": "^2.5.0-beta.1",
     "react-dom": "^16.13.1",
